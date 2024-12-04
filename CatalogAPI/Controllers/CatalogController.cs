@@ -8,7 +8,7 @@ namespace CatalogAPI.Controllers
     public class CatalogController : ControllerBase
     {
         // Get-metode, som testen kan kalde på
-        [HttpGet]
+        [HttpPost]
         public IActionResult AddProduct()
         {
             return Ok();  // Returnerer HTTP 200 OK 
