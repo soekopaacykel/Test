@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace CatalogAPI.Controllers
 {
     [ApiController]
@@ -8,7 +9,7 @@ namespace CatalogAPI.Controllers
     {
         // Get-metode, som testen kan kalde på
         [HttpGet]
-        public IActionResult GetProduct()
+        public IActionResult AddProduct()
         {
             return Ok();  // Returnerer HTTP 200 OK 
         }
