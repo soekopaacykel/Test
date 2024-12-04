@@ -15,35 +15,20 @@ namespace CatalogAPI.Tests
             var controller = new CatalogController();
 
             // Act
-            var result = controller.AddProduct(); // Forsøger at hente produktet
+            var result = controller.AddProduct(); 
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(OkResult)); // Forventer HTTP 200 OK
+            Assert.IsInstanceOfType(result, typeof(OkResult));
         }
 
         [TestMethod]
         public async Task AddProduct_GårAltidIgennem()
         {
             // Arrange
-            var newProduct = new Product
-            {
-                Id = Guid.NewGuid(),
-                Name = "Test Product",
-                Description = "This is a test product.",
-                Category = Category.Electronics, // Gyldig kategori
-                FinalPrice = 100.00m,
-                CurrentBid = 50.00m,
-                Brand = "TestBrand",
-                Model = "TestModel",
-                Condition = "New",
-                ImageUrls = new string[] { "http://example.com/image1.jpg" },
-                Valuation = 150.00m,
-                ReleaseDate = DateTime.UtcNow,
-                ExpiryDate = DateTime.UtcNow.AddYears(1)
-            };
+            var newProduct = new Product();
 
             // Act
-            var result = await _controller.AddProduct(newProduct);
+            var result = await controller.AddProduct(newProduct);
 
             // Assert
             Assert.IsTrue(true); // Testen vil altid passere uden at validere noget
