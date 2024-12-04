@@ -1,58 +1,46 @@
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 
 
 namespace CatalogAPI.Controllers
 {
-    [ApiController]
+
     [Route("api/[controller]")]
     public class CatalogController : ControllerBase
     {
-        // Get-metode, som testen kan kalde på
-        [HttpPost]
-        public IActionResult AddProduct()
+        private readonly IMongoCollection<Product> _productCollection;
+
+        public CatalogController(IMongoCollection<Product> productCollection)
         {
-            return Ok();  // Returnerer HTTP 200 OK 
+            _productCollection = productCollection;
         }
-        
-        
-       
+
+        // Post-metode, som testen kan kalde på
+        [HttpPost]
+        public async Task<IActionResult> AddProduct([FromBody] Product newProduct)
+        {
+            // Hvis produktet ikke har et ID, opret et nyt
+            if (newProduct.Id == 0)
+            {
+                newProduct.Id = 1;
+            }
+            // Indsæt produktet i databasen
+            await _productCollection.InsertOneAsync(newProduct);
+
+            // Returner en OkResult med en besked
+            return Ok("Har lavet lortet");
+        }
+
+    }
+
+
+    public class Product
+    {
+        public string Name { get; set; }
+
+        public int Id { get; set; }
+        public string Description { get; set; }
+        public decimal Price { get; set; }
     }
 }
 
-
-
-/*
-[HttpPost]
-        [Route("AddProduct")]
-        public async Task<ActionResult<Product>> AddProduct([FromBody] Product newProduct)
-        {
-            try
-            {
-                // Inputvalidering: Sørger for at produktet har nødvendige felter (f.eks. navn og vurdering)
-                if (newProduct == null || string.IsNullOrEmpty(newProduct.Name) || newProduct.Valuation <= 0)
-                {
-                    _logger.LogWarning("Invalid product data received: {Product}", newProduct);
-                    return BadRequest("Produktet er ikke gyldigt. Sørg for at have et navn og en positiv pris.");
-                }
-
-                // Hvis produktet ikke har et ID, opret et nyt
-                if (newProduct.Id == Guid.Empty)
-                {
-                    newProduct.Id = Guid.NewGuid();
-                }
-
-                // Indsæt produktet i databasen
-                await _productCollection.InsertOneAsync(newProduct);
-
-                // Returner en CreatedAtRouteResult med det oprettede produkt
-                _logger.LogInformation("Product added with ID: {ProductId}", newProduct.Id);
-                return CreatedAtRoute("GetProductById", new { productId = newProduct.Id }, newProduct);
-            }
-            catch (Exception ex)
-            {
-                // Hvis noget går galt, f.eks. i forbindelse med databasen, returner en serverfejl
-                _logger.LogError(ex, "Error while adding product");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-        */
